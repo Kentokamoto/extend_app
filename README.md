@@ -16,5 +16,7 @@ source ./.venv/bin/activate
 
 ## Future Enhancements
 
-- Proper handling of logout stage when the shell exits with a CTRL-C
-  - This can probably be done by creating a readline wrapper that interprets keyboard exceptions
+- Add proper logging
+- Pagination for use cases like listing many user or transactions
+- colors!
+- refesh token if authentication has surpassed 10 mins
