@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -26,23 +26,24 @@ class User(BaseModel):
     phone: str
     phoneIsoCountry: str
     avatarType: str
-    avatarUrl: str
+    avatarUrl: Optional[str] = None
     createdAt: str
     updatedAt: str
     currency: str
     locale: str
     timezone: str
     verified: bool
-    hasExpensifyLink: bool
-    quickbooksTokenId: str
-    employeeId: str
-    issuerSanctions: List[IssuerSanction]
-    organization: Organization
-    organizationId: str
-    organizationRole: str
+    hasExpensifyLink: Optional[bool] = None
+    quickbooksTokenId: Optional[str] = None
+    employeeId: Optional[str] = None
+    issuerSanctions: Optional[List[IssuerSanction]] = None
+    organization: Optional[Organization] = None
+    organizationId: Optional[str] = None
+    organizationRole: Optional[str] = None
 
 
 class Account(BaseModel):
     user: User
     token: str
     refreshToken: str
+
