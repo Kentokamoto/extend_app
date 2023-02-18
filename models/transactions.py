@@ -56,6 +56,31 @@ class Transaction(BaseModel):
     creditCardHasReferenceFields: bool
     creditCardType: str
 
+    def pretty_print(self):
+        print()
+        print("TRANSACTION INFO")
+        print("Merchant           ---> {}".format(self.merchantName))
+        print("Type               ---> {}".format(self.mccGroup))
+        print(
+            "Transaction Date   ---> {}".format(
+                datetime.datetime.strptime(
+                    self.authedAt, "%Y-%m-%dT%H:%M:%S.%f%z"
+                ).strftime("%c %Z")
+            )
+        )
+        print("Amount             ---> {}".format(self.authBillingAmountCents))
+        print("Status             ---> {}".format(self.status))
+        print("City               ---> {}".format(self.merchantCity))
+        print("State              ---> {}".format(self.merchantState))
+        print("Address            ---> {}".format(self.merchantAddress))
+
+        print()
+        print("CARD INFO")
+        print("Last 4 Digits      ---> {}".format(self.vcnLast4))
+        print("Parent Credit Card ---> {}".format(self.parentCreditCardDisplayName))
+        print("Display Name       ---> {}".format(self.creditCardDisplayName))
+        print()
+
 
 class TransactionList(BaseModel):
     transactions: Optional[List[Transaction]] = None
@@ -64,7 +89,8 @@ class TransactionList(BaseModel):
         table = PrettyTable(
             [
                 "Index",
-                "Authorization Date",
+                "Transaction ID",
+                "Transaction Date",
                 "Authorization Amount",
                 "Currency",
                 "Name",
@@ -75,6 +101,7 @@ class TransactionList(BaseModel):
         )
         if self.transactions:
             for index, transaction in enumerate(self.transactions):
+                id = transaction.id
                 auth_date = datetime.datetime.strptime(
                     transaction.authedAt, "%Y-%m-%dT%H:%M:%S.%f%z"
                 ).strftime("%c %Z")
@@ -87,6 +114,7 @@ class TransactionList(BaseModel):
                 table.add_row(
                     [
                         index,
+                        id,
                         auth_date,
                         auth_amount,
                         currency,

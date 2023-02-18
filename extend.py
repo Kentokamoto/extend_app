@@ -11,8 +11,8 @@ class ExtendShell(cmd.Cmd):
     banner = "Welcome to Extend CLI. Type help or ? to list commands.\n"
     prompt = "(Extend CLI) >"
     file = None
-    extend_account: Account
-    cards: Cards
+    extend_account: Account = None
+    cards: Cards = None
     api = ExtendAPI()
 
     def do_test(self, arg) -> None:
@@ -47,7 +47,6 @@ class ExtendShell(cmd.Cmd):
             )
             self.cards.pretty_print()
 
-    # TODO
     def do_transactions(self, arg) -> None:
         "List the transactions associated with your virtual card."
         if not self.extend_account:
@@ -61,10 +60,10 @@ class ExtendShell(cmd.Cmd):
         card_number = 0
         if not arg:
             self.cards.pretty_print()
-            card_number = int(input("Select card number:"))
+            card_number = int(input("Select card number: "))
         else:
             card_number = int(arg)
-        if int(arg) > len(self.cards.virtualCards):
+        if card_number > len(self.cards.virtualCards):
             print(
                 "Invalid card number. Card number must be between 0 and {}".format(
                     len(self.cards.virtualCards)
@@ -81,7 +80,14 @@ class ExtendShell(cmd.Cmd):
     # TODO
     def do_transaction_detail(self, arg) -> None:
         "View the details for each individual transaction you’ve made."
-        pass
+        if not self.extend_account:
+            print("Not signed in. Type login to sign into an existing Extend account")
+            return
+        transaction_id = arg
+        transaction = self.api.get_transaction_detail(
+            self.extend_account.token, transaction_id
+        )
+        transaction.pretty_print()
 
     def do_EOF(self, line) -> bool:
         "Logout of extend account and close shell"

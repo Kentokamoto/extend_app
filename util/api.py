@@ -69,6 +69,18 @@ class ExtendAPI:
         except Exception as e:
             print("Failed to get account: {}".format(e))
 
+    def get_transaction_detail(self, bearer_token, transaction_id):
+        url = self.api_endpoint + "transactions/" + transaction_id
+        header = self.header.copy()
+        header["Authorization"] = "Bearer {}".format(bearer_token)
+        try:
+            res = requests.get(url, headers=header)
+            return transactions.Transaction.parse_raw(res.text)
+        except ValidationError as ve:
+            print("Failed to create account: {}".format(ve))
+        except Exception as e:
+            print("Failed to get account: {}".format(e))
+
     def signout(self, bearer_token: str):
         url = self.api_endpoint + "signout"
         header = self.header.copy()

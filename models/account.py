@@ -46,4 +46,3 @@ class Account(BaseModel):
     user: User
     token: str
     refreshToken: str
-
