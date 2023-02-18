@@ -51,7 +51,6 @@ class ExtendAPI():
         header["Authorization"] = "Bearer {}".format(bearer_token)
         try:
             res = requests.get(url, headers=header)
-            print(res)
             return cards.Cards.parse_raw(res.text)
         except ValidationError as ve:
             print("Failed to create account: {}".format(ve))
