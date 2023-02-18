@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import datetime
+from prettytable import PrettyTable
+
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -129,3 +132,28 @@ class Cards(BaseModel):
     pagination: Optional[Pagination] = None
     virtualCards: Optional[List[VirtualCard]] = None
 
+    def pretty_print(self):
+        table = PrettyTable(
+            [
+                "Card Number",
+                "Name",
+                "Last 4",
+                "Exp Date",
+                "Limit",
+                "Spent",
+                "Balance",
+            ]
+        )
+        if self.virtualCards:
+            for index, card in enumerate(self.virtualCards):
+                name = card.displayName
+                last4 = card.last4
+                exp_date = datetime.datetime.strptime(
+                    card.expires, "%Y-%m-%dT%H:%M:%S.%f%z"
+                ).strftime("%m/%Y")
+                limit = float(card.limitCents) / 100
+                spent = float(card.lifetimeSpentCents) / 100
+                balance = float(card.balanceCents) / 100
+
+                table.add_row([index, name, last4, exp_date, limit, spent, balance])
+            print(table)

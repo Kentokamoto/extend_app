@@ -20,3 +20,5 @@ source ./.venv/bin/activate
 - Pagination for use cases like listing many user or transactions
 - colors!
 - refesh token if authentication has surpassed 10 mins
+- Proper table formatting for amounts
+  - 50.00 shows up as 50.0

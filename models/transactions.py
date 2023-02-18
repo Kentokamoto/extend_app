@@ -1,4 +1,6 @@
 from __future__ import annotations
+from prettytable import PrettyTable
+import datetime
 
 from typing import List, Optional
 
@@ -58,3 +60,40 @@ class Transaction(BaseModel):
 class TransactionList(BaseModel):
     transactions: Optional[List[Transaction]] = None
 
+    def pretty_print(self):
+        table = PrettyTable(
+            [
+                "Index",
+                "Authorization Date",
+                "Authorization Amount",
+                "Currency",
+                "Name",
+                "Description",
+                "City",
+                "State",
+            ]
+        )
+        if self.transactions:
+            for index, transaction in enumerate(self.transactions):
+                auth_date = datetime.datetime.strptime(
+                    transaction.authedAt, "%Y-%m-%dT%H:%M:%S.%f%z"
+                ).strftime("%c %Z")
+                auth_amount = float(transaction.authBillingAmountCents) / 100
+                currency = transaction.authBillingCurrency
+                merchant_name = transaction.merchantName
+                merchante_description = transaction.mccDescription
+                merchant_city = transaction.merchantCity
+                merchant_state = transaction.merchantState
+                table.add_row(
+                    [
+                        index,
+                        auth_date,
+                        auth_amount,
+                        currency,
+                        merchant_name,
+                        merchante_description,
+                        merchant_city,
+                        merchant_state,
+                    ]
+                )
+            print(table)

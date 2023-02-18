@@ -1,7 +1,6 @@
 import cmd
 import datetime
 import getpass
-from prettytable import PrettyTable
 
 from models.account import Account
 from models.cards import Cards
@@ -12,8 +11,8 @@ class ExtendShell(cmd.Cmd):
     banner = "Welcome to Extend CLI. Type help or ? to list commands.\n"
     prompt = "(Extend CLI) >"
     file = None
-    extend_account: Account = None
-    cards: Cards = None
+    extend_account: Account
+    cards: Cards
     api = ExtendAPI()
 
     def do_test(self, arg) -> None:
@@ -25,7 +24,7 @@ class ExtendShell(cmd.Cmd):
         email = input("email: ")
         password = getpass.getpass()
         self.extend_account = self.api.signin(email=email, password=password)
-        print(self.extend_account.dict())
+        print("Success")
 
     def do_user(self, arg) -> None:
         "Get information about a user"
@@ -46,7 +45,7 @@ class ExtendShell(cmd.Cmd):
             self.cards = self.api.get_cards(
                 bearer_token=self.extend_account.token, query_params=params
             )
-            print(self.cards.dict())
+            self.cards.pretty_print()
 
     # TODO
     def do_transactions(self, arg) -> None:
@@ -61,36 +60,23 @@ class ExtendShell(cmd.Cmd):
 
         card_number = 0
         if not arg:
-            table = PrettyTable(
-                ["Card Number", "Card ID", "Name", "Last 4", "Exp Date"]
-            )
-            for index, card in enumerate(self.cards.virtualCards):
-                card_id = card.id
-                name = card.displayName
-                last4 = card.last4
-                exp_date = datetime.datetime.strptime(
-                    card.expires, "%Y-%m-%dT%H:%M:%S.%f%z"
-                ).strftime("%m/%Y")
-                table.add_row([index, card_id, name, last4, exp_date])
-            print(table)
-
+            self.cards.pretty_print()
             card_number = int(input("Select card number:"))
         else:
-            if int(arg) > len(self.cards.virtualCards):
-                print(
-                    "Invalid card number. Card number must be between 0 and {}".format(
-                        len(self.cards.virtualCards)
-                    )
-                )
-                return
-
             card_number = int(arg)
+        if int(arg) > len(self.cards.virtualCards):
+            print(
+                "Invalid card number. Card number must be between 0 and {}".format(
+                    len(self.cards.virtualCards)
+                )
+            )
+            return
 
         card_id = self.cards.virtualCards[card_number].id
         transaction_list = self.api.get_transaction_list(
             bearer_token=self.extend_account.token, card_id=card_id
         )
-        print(transaction_list.dict())
+        transaction_list.pretty_print()
 
     # TODO
     def do_transaction_detail(self, arg) -> None:
