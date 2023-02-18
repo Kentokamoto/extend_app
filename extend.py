@@ -32,7 +32,7 @@ class ExtendShell(cmd.Cmd):
             id = arg if arg else "me"
             user = self.api.get_user(id=id,
                                         bearer_token=self.extend_account.token)
-            print(user.dict()) 
+            print(user.dict())
 
     def do_cards(self, arg) -> None:
         'Get list of virtual cards for signed in user'
