@@ -35,13 +35,23 @@ class ExtendShell(cmd.Cmd):
             print(user.dict())
 
     def do_cards(self, arg) -> None:
-        'Get list of virtual cards for signed in user'
+        'List all virtual cards available to your user, including the available balance remaining'
         if not self.extend_account:
             print("Not signed in. Type login to sign into an existing Extend account")
         else:
             id = arg if arg else "me"
             cards = self.api.get_cards(bearer_token=self.extend_account.token)
             print(cards.dict())
+
+    # TODO
+    def do_transactions(self, arg) -> None:
+        'List the transactions associated with your virtual card.'
+        pass
+
+    # TODO
+    def do_transaction_detail(self, arg) -> None:
+        'View the details for each individual transaction you’ve made.'
+        pass
 
     def do_EOF(self, line) -> bool:
         'Logout of extend account and close shell'
