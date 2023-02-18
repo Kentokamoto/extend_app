@@ -1,6 +1,6 @@
 import json
 import requests
-from models import account
+from models import account, cards
 
 
 class ExtendAPI():
@@ -42,6 +42,22 @@ class ExtendAPI():
             print("Failed to create account: {}".format(ve))
         except Exception as e:
             print("Failed to get account: {}".format(e))
+
+    def get_cards(self, bearer_token, query_params={}) -> cards.Cards:
+        # TODO Handle for query parameters
+        url = self.api_endpoint + "virtualcards"
+
+        header = self.header.copy()
+        header["Authorization"] = "Bearer {}".format(bearer_token)
+        try:
+            res = requests.get(url, headers=header)
+            print(res)
+            return cards.Cards.parse_raw(res.text)
+        except ValidationError as ve:
+            print("Failed to create account: {}".format(ve))
+        except Exception as e:
+            print("Failed to get account: {}".format(e))
+        
 
     def signout(self, bearer_token: str):
         url = self.api_endpoint + "signout"
