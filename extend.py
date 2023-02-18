@@ -1,5 +1,6 @@
 import cmd
 import logging
+import getpass
 
 import modules.account
 
@@ -20,7 +21,7 @@ class ExtendShell(cmd.Cmd):
     banner = "Welcome to Extend CLI. Type help or ? to list commands.\n"
     prompt = "(Extend CLI) >"
     file = None
-    extend_account = None
+    extend_account: Account
 
     def do_test(self, arg):
         'Test Interpreter'
@@ -28,6 +29,11 @@ class ExtendShell(cmd.Cmd):
 
     def do_login(self, arg):
         'Sign into Extend account'
+        username = input("Username: ")
+        password = getpass.getpass()
+        
+        print("username: {}".format(username))
+        print("password: {}".format(password))
 
     def do_EOF(self, line):
         'Logout of extend account and close shell'
