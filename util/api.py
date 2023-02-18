@@ -1,3 +1,4 @@
+import json
 import requests
 from models import account
 
@@ -42,16 +43,14 @@ class ExtendAPI():
         except Exception as e:
             print("Failed to get account: {}".format(e))
 
-    def signout(self, email: str, password: str):
+    def signout(self, bearer_token: str):
         url = self.api_endpoint + "signout"
-        body = {
-                "email": email,
-                "password": password
-                }
+        header = self.header.copy()
+        header["Authorization"] = "Bearer {}".format(bearer_token)
         try:
-            res = requests.post(url, headers=self.header, json=body)
-            return Account.parse_raw(res.text)
-        except ValidationError as ve:
-            print("Failed to create account: {}".format(ve))
+            res = requests.delete(url, headers=header)
+
+            if 'msg' not in json.loads(res.text):
+                raise Exception("Failed to signout")
         except Exception as e:
             print("Failed to signin: {}".format(e))

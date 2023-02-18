@@ -40,7 +40,8 @@ class ExtendShell(cmd.Cmd):
         print()
         print("Logging out")
         # Logout script
-    
+        if self.extend_account:
+            self.api.signout(self.extend_account.token)
         return True
 
 if __name__ == '__main__':
