@@ -1,4 +1,4 @@
-from models.account import Account
+from models import account
 
 
 class TestAccount:
@@ -24,4 +24,23 @@ class TestAccount:
     }'''
 
     def test_model_schema(self):
-        acct = Account.parse_raw(self.example_model)
+        acct = account.Account.parse_raw(self.example_model)
+
+    def test_get_user_model_schema(self):
+        response = '''
+        {"id":"u_6Z4b7TxXAJ97m70luC2zAM",
+        "firstName":"Kento",
+        "lastName":"Okamoto",
+        "email":"sarah+kento@paywithextend.com",
+        "phone":"+12125555555",
+        "phoneIsoCountry":"US",
+        "avatarType":"DEFAULT",
+        "createdAt":"2023-02-13T22:28:11.180+0000",
+        "updatedAt":"2023-02-18T01:49:06.585+0000",
+        "currency":"USD",
+        "locale":"en-US",
+        "timezone":"America/New_York",
+        "verified":true,
+        "mfaPreference":"EMAIL"}
+        '''
+        acct = account.User.parse_raw(response)
