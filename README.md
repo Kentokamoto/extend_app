@@ -1,17 +1,18 @@
 ## Usage
 
-### Prereq
+### Install
 
-**Note** This app has been tested to run on python version 3.10.8. If your system is not running this version by default AND
-you are running in to package issues, try installing and selecting version 3.10.8 and try again:
-
-```bash
-pyenv install 3.10.8
-```
+1. Start the virtual environment
 
 ```bash
 python3 -m venv ./.venv
 source ./.venv/bin/activate
+```
+
+2. Install the required python modules
+
+```bash
+pip install -r requirements.txt
 ```
 
 ### Running the App
@@ -37,3 +38,12 @@ Typing "EOF" or CTRL-D will log you out of your account and end the session
 - Proper table formatting for amounts
   - 50.00 shows up as 50.0
 - object error checking
+
+## Other notes
+
+**Note** This app has been tested to run on python version 3.10.8. If your system is not running this version by default AND
+you are running in to package issues, try installing and selecting version 3.10.8 and try again:
+
+```bash
+pyenv install 3.10.8
+```
