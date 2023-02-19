@@ -11,9 +11,15 @@ class ExtendShell(cmd.Cmd):
     banner = "Welcome to Extend CLI. Type help or ? to list commands.\n"
     prompt = "(Extend CLI) >"
     file = None
-    extend_account: Account = None
-    cards: Cards = None
-    api = ExtendAPI()
+    extend_account: Account
+    cards: Cards
+
+    def __init__(self):
+        super().__init__()
+        self.extend_account = None
+        self.cards = None
+
+        self.api = ExtendAPI()
 
     def do_test(self, arg) -> None:
         "Test Interpreter"
@@ -23,39 +29,68 @@ class ExtendShell(cmd.Cmd):
         "Sign into Extend account"
         email = input("email: ")
         password = getpass.getpass()
-        self.extend_account = self.api.signin(email=email, password=password)
-        print("Success")
+        try:
+            self.extend_account = self.api.signin(email=email, password=password)
+            if self.extend_account:
+                print("Success")
+            else:
+                print("Failed to login")
+
+        except Exception:
+            print("Failed to login")
+            pass
+
+    def do_logout(self, arg) -> None:
+        if self.extend_account:
+            try:
+                self.api.signout(self.extend_account.token)
+            except Exception:
+                pass
+            finally:
+                self.extend_account = None
+                self.cards = None
 
     def do_user(self, arg) -> None:
         "Get information about a user"
         if not self.extend_account:
-            print("Not signed in. Type login to sign into an existing Extend account")
-        else:
-            id = arg if arg else "me"
-            user = self.api.get_user(id=id, bearer_token=self.extend_account.token)
-            print(user.dict())
+            print("Not signed in")
+            try:
+                self.do_login(None)
+            except Exception:
+                return
+        id = arg if arg else "me"
+        user = self.api.get_user(id=id, bearer_token=self.extend_account.token)
+        print(user.dict())
 
     def do_cards(self, arg) -> None:
         "List all virtual cards available to your user, including the available balance remaining"
         if not self.extend_account:
-            print("Not signed in. Type login to sign into an existing Extend account")
-        else:
-            id = arg if arg else "me"
-            params = {}
-            self.cards = self.api.get_cards(
-                bearer_token=self.extend_account.token, query_params=params
-            )
-            self.cards.pretty_print()
+            print("Not signed in")
+            try:
+                self.do_login(arg)
+            except Exception:
+                return
+        params = {}
+        self.cards = self.api.get_cards(
+            bearer_token=self.extend_account.token, query_params=params
+        )
+        self.cards.pretty_print()
 
     def do_transactions(self, arg) -> None:
         "List the transactions associated with your virtual card."
         if not self.extend_account:
-            print("Not signed in. Type login to sign into an existing Extend account")
-            return
+            print("Not signed in")
+            try:
+                self.do_login(None)
+            except Exception:
+                return
         if not self.cards:
-            self.cards = self.api.get_cards(
-                bearer_token=self.extend_account.token, query_params={}
-            )
+            try:
+                self.cards = self.api.get_cards(
+                    bearer_token=self.extend_account.token, query_params={}
+                )
+            except Exception:
+                return
 
         card_number = 0
         if not arg:
@@ -77,25 +112,32 @@ class ExtendShell(cmd.Cmd):
         )
         transaction_list.pretty_print()
 
-    # TODO
     def do_transaction_detail(self, arg) -> None:
         "View the details for each individual transaction you’ve made."
         if not self.extend_account:
-            print("Not signed in. Type login to sign into an existing Extend account")
-            return
+            print("Not signed in.")
+            try:
+                self.do_login(arg)
+            except Exception:
+                return
         transaction_id = arg
-        transaction = self.api.get_transaction_detail(
-            self.extend_account.token, transaction_id
-        )
-        transaction.pretty_print()
+        try:
+            transaction = self.api.get_transaction_detail(
+                self.extend_account.token, transaction_id
+            )
+            transaction.pretty_print()
+        except Exception as e:
+            print("Failed to get transaction detail: {}".format(e))
 
-    def do_EOF(self, line) -> bool:
+    def do_EOF(self, arg) -> bool:
         "Logout of extend account and close shell"
         print()
         print("Logging out")
         # Logout script
-        if self.extend_account:
-            self.api.signout(self.extend_account.token)
+        try:
+            self.do_logout(arg)
+        except Exception:
+            return False
         return True
 
 
