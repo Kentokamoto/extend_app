@@ -68,7 +68,10 @@ class Transaction(BaseModel):
                 ).strftime("%c %Z")
             )
         )
-        print("Amount             ---> {}".format(self.authBillingAmountCents))
+        print("Authorized amount  ---> {}".format(
+            float(self.authBillingAmountCents)/100))
+        print("Cleared amount     ---> {}".format(
+            float(self.clearingBillingAmountCents)/100))
         print("Status             ---> {}".format(self.status))
         print("City               ---> {}".format(self.merchantCity))
         print("State              ---> {}".format(self.merchantState))
@@ -77,7 +80,8 @@ class Transaction(BaseModel):
         print()
         print("CARD INFO")
         print("Last 4 Digits      ---> {}".format(self.vcnLast4))
-        print("Parent Credit Card ---> {}".format(self.parentCreditCardDisplayName))
+        print("Parent Credit Card ---> {}".format(
+            self.parentCreditCardDisplayName))
         print("Display Name       ---> {}".format(self.creditCardDisplayName))
         print()
 
