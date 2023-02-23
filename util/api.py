@@ -54,6 +54,7 @@ class ExtendAPI:
             res = requests.get(url, headers=header)
             if res.status_code >= 300:
                 return None
+            print(res.text)
             return cards.Cards.parse_raw(res.text)
         except ValidationError as ve:
             print("Failed to create account: {}".format(ve))
@@ -77,7 +78,9 @@ class ExtendAPI:
         except Exception as e:
             print("Failed to get account: {}".format(e))
 
-    def get_transaction_detail(self, bearer_token, transaction_id):
+    def get_transaction_detail(
+        self, bearer_token, transaction_id
+    ) -> transactions.Transaction:
         url = self.api_endpoint + "transactions/" + transaction_id
         header = self.header.copy()
         header["Authorization"] = "Bearer {}".format(bearer_token)

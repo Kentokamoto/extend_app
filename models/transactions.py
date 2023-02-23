@@ -6,6 +6,9 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+class DeclineReason(BaseModel):
+    code: str
+    description: str
 
 class Transaction(BaseModel):
     id: str
@@ -22,6 +25,7 @@ class Transaction(BaseModel):
     virtualCardId: str
     type: str
     status: str
+    declineReasons: Optional[List[DeclineReason]] = None
     approvalCode: str
     authBillingAmountCents: int
     authBillingCurrency: str
@@ -68,9 +72,9 @@ class Transaction(BaseModel):
                 ).strftime("%c %Z")
             )
         )
-        print("Authorized amount  ---> {}".format(
+        print("Authorized amount  ---> {0:.2f}".format(
             float(self.authBillingAmountCents)/100))
-        print("Cleared amount     ---> {}".format(
+        print("Cleared amount     ---> {0:.2f}".format(
             float(self.clearingBillingAmountCents)/100))
         print("Status             ---> {}".format(self.status))
         print("City               ---> {}".format(self.merchantCity))
@@ -109,7 +113,8 @@ class TransactionList(BaseModel):
                 auth_date = datetime.datetime.strptime(
                     transaction.authedAt, "%Y-%m-%dT%H:%M:%S.%f%z"
                 ).strftime("%c %Z")
-                auth_amount = float(transaction.authBillingAmountCents) / 100
+                auth_amount = "{0:.2f}".format(
+                        float(transaction.authBillingAmountCents) / 100)
                 currency = transaction.authBillingCurrency
                 merchant_name = transaction.merchantName
                 merchante_description = transaction.mccDescription

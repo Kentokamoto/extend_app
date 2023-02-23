@@ -38,6 +38,10 @@ Typing "EOF" or CTRL-D will log you out of your account and end the session
 - Proper table formatting for amounts
   - 50.00 shows up as 50.0
 - object error checking
+- Handle amounts beyond USD
+
+- Add to cards
+  - Name, address of card
 
 ## Other notes
 

@@ -131,6 +131,10 @@ class ExtendShell(cmd.Cmd):
         except Exception as e:
             print("Failed to get transaction detail: {}".format(e))
 
+    def do_exit(self, arg) -> bool:
+        "Close the app"
+        return self.do_EOF(arg)
+
     def do_EOF(self, arg) -> bool:
         "Logout of extend account and close shell"
         print()

@@ -30,6 +30,8 @@ class Recipient(BaseModel):
     timezone: str
     verified: bool
     mfaPreference: str
+    def name(self):
+        return "{} {}".format(self.firstName, self.lastName)
 
 
 class Organization(BaseModel):
@@ -59,6 +61,9 @@ class Cardholder(BaseModel):
     organizationRole: str
     mfaPreference: str
 
+    def name(self):
+        return "{} {}".format(self.firstName, self.lastName)
+
 
 class Urls(BaseModel):
     large: str
@@ -82,6 +87,18 @@ class Address(BaseModel):
     province: str
     postal: str
     country: str
+
+    def __str__(self):
+        output = '''{addr1}
+{addr2}
+{city}, {province}, {postal}
+{country}'''.format(addr1=self.address1,
+                    addr2=self.address2,
+                    city=self.city,
+                    province=self.province,
+                    postal=self.province,
+                    country=self.country)
+        return output
 
 
 class Features(BaseModel):
@@ -136,24 +153,39 @@ class Cards(BaseModel):
         table = PrettyTable(
             [
                 "Card Number",
-                "Name",
                 "Last 4",
+                "Name on Card",
+                "Billing Address",
                 "Exp Date",
-                "Limit",
-                "Spent",
-                "Balance",
+                "Description",
+                "Limit ($)",
+                "Spent ($)",
+                "Balance ($)",
             ]
         )
+        # Formatting
+        table.align["Billing Address"] = 'l'
+
         if self.virtualCards:
             for index, card in enumerate(self.virtualCards):
-                name = card.displayName
+                name = card.recipient.name()
                 last4 = card.last4
                 exp_date = datetime.datetime.strptime(
                     card.expires, "%Y-%m-%dT%H:%M:%S.%f%z"
                 ).strftime("%m/%Y")
-                limit = float(card.limitCents) / 100
-                spent = float(card.lifetimeSpentCents) / 100
-                balance = float(card.balanceCents) / 100
+                limit = "{0:.2f}".format(float(card.limitCents) / 100)
+                spent = "{0:.2f}".format(float(card.lifetimeSpentCents) / 100)
+                balance = "{0:.2f}".format(float(card.balanceCents) / 100)
+                address = str(card.address)
+                description = card.displayName
 
-                table.add_row([index, name, last4, exp_date, limit, spent, balance])
+                table.add_row([index,
+                               last4,
+                               name,
+                               address,
+                               exp_date,
+                               description,
+                               limit,
+                               spent,
+                               balance])
             print(table)
