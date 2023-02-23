@@ -43,6 +43,7 @@ class ExtendShell(cmd.Cmd):
             pass
 
     def do_logout(self, arg) -> None:
+        "Logout of account if signed in"
         if self.extend_account:
             try:
                 self.api.signout(self.extend_account.token)
@@ -61,8 +62,12 @@ class ExtendShell(cmd.Cmd):
             except Exception:
                 return
         id = arg if arg else "me"
-        user = self.api.get_user(id=id, bearer_token=self.extend_account.token)
-        print(user.dict())
+        try:
+            user = self.api.get_user(id=id,
+                                     bearer_token=self.extend_account.token)
+            print(str(user))
+        except Exception:
+            return
 
     def do_cards(self, arg) -> None:
         "List all virtual cards available to your user, including the available balance remaining"

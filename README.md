@@ -3,6 +3,7 @@
 ### Install
 
 1. Start the virtual environment
+   In the root of the repository
 
 ```bash
 python3 -m venv ./.venv
@@ -23,7 +24,11 @@ python extend.py
 
 Documented commands (type help <topic>):
 ========================================
-EOF  cards  help  login  test  transaction_detail  transactions  user
+EOF  cards  exit  help  login  test  transaction_detail  transactions  user
+
+Undocumented commands:
+======================
+logout
 ```
 
 Typing "EOF" or CTRL-D will log you out of your account and end the session
@@ -35,13 +40,12 @@ Typing "EOF" or CTRL-D will log you out of your account and end the session
   - This includes adding query parameters to the url and moving away from string concatenation to create the url endpoint
 - colors!
 - refesh token if authentication has surpassed 10 mins
-- Proper table formatting for amounts
-  - 50.00 shows up as 50.0
 - object error checking
 - Handle amounts beyond USD
 
-- Add to cards
-  - Name, address of card
+### Potential problems
+
+API does not seem to return the full list of transactions on a card after a certain time
 
 ## Other notes
 

@@ -41,6 +41,17 @@ class User(BaseModel):
     organizationId: Optional[str] = None
     organizationRole: Optional[str] = None
 
+    def __str__(self):
+        output = '''
+First Name: {firstName}
+Last Name:  {lastName}
+email:      {email}
+phone:      {phone}
+        '''.format(firstName=self.firstName,
+                   lastName=self.lastName,
+                   email=self.email,
+                   phone=self.phone)
+        return output
 
 class Account(BaseModel):
     user: User

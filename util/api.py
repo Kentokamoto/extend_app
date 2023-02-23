@@ -54,7 +54,6 @@ class ExtendAPI:
             res = requests.get(url, headers=header)
             if res.status_code >= 300:
                 return None
-            print(res.text)
             return cards.Cards.parse_raw(res.text)
         except ValidationError as ve:
             print("Failed to create account: {}".format(ve))
