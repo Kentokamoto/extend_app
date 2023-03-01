@@ -134,3 +134,5 @@ class TransactionList(BaseModel):
                     ]
                 )
             print(table)
+        else:
+            print("No transactions found for this card")

@@ -17,7 +17,7 @@ class ExtendAPI:
         body = {"email": email, "password": password}
         try:
             res = requests.post(url, headers=self.header, json=body)
-            if res.status_code >= 300:
+            if res.status_code >= 400:
                 return None
             return account.Account.parse_raw(res.text)
         except ValidationError as ve:
@@ -36,7 +36,7 @@ class ExtendAPI:
 
         try:
             res = requests.get(url, headers=header)
-            if res.status_code >= 300:
+            if res.status_code >= 400:
                 return None
             return account.User.parse_raw(res.text)
         except ValidationError as ve:
@@ -52,7 +52,7 @@ class ExtendAPI:
         header["Authorization"] = "Bearer {}".format(bearer_token)
         try:
             res = requests.get(url, headers=header)
-            if res.status_code >= 300:
+            if res.status_code >= 400:
                 return None
             return cards.Cards.parse_raw(res.text)
         except ValidationError as ve:
@@ -69,7 +69,7 @@ class ExtendAPI:
         header["Authorization"] = "Bearer {}".format(bearer_token)
         try:
             res = requests.get(url, headers=header)
-            if res.status_code >= 300:
+            if res.status_code >= 400:
                 return None
             return transactions.TransactionList.parse_raw(res.text)
         except ValidationError as ve:
@@ -85,7 +85,7 @@ class ExtendAPI:
         header["Authorization"] = "Bearer {}".format(bearer_token)
         try:
             res = requests.get(url, headers=header)
-            if res.status_code >= 300:
+            if res.status_code >= 400:
                 return None
             return transactions.Transaction.parse_raw(res.text)
         except ValidationError as ve:
