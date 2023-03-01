@@ -1,5 +1,4 @@
 import cmd
-import datetime
 import getpass
 
 from models.account import Account
